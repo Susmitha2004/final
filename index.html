@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>My E-Commerce Web App</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+            color: #333;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+        }
+
+        header nav ul {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+        }
+
+        header nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        header nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .product-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .product-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: calc(33.333% - 20px);
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .product-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .product-card h3 {
+            margin: 10px 0;
+            font-size: 1.2em;
+        }
+
+        .product-card p {
+            color: #777;
+            font-size: 0.9em;
+        }
+
+        .product-card button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .product-card button:hover {
+            background-color: #555;
+        }
+
+        .cart {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .cart h2 {
+            margin-bottom: 20px;
+        }
+
+        .cart ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .cart ul li {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: 50px;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .product-card {
+                width: calc(50% - 20px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .product-card {
+                width: 100%;
+            }
+
+            header nav ul li {
+                display: block;
+                margin: 10px 0;
+            }
+
+            .container {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#products">Products</a></li>
+                    <li><a href="#cart">Cart</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <section id="home" class="container">
+        <h1>Welcome to Our E-Commerce Site!</h1>
+        <p>Shop your favorite products below!</p>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="container product-grid">
+        <!-- Product 1 -->
+        <div class="product-card">
+            <img src="https://via.placeholder.com/300x200" alt="Product 1" loading="lazy">
+            <h3>Product 1</h3>
+            <p>$25.00</p>
+            <button onclick="addToCart('Product 1', 25)">Add to Cart</button>
+        </div>
+
+        <!-- Product 2 -->
+        <div class="product-card">
+            <img src="https://via.placeholder.com/300x200" alt="Product 2" loading="lazy">
+            <h3>Product 2</h3>
+            <p>$30.00</p>
+            <button onclick="addToCart('Product 2', 30)">Add to Cart</button>
+        </div>
+
+        <!-- Product 3 -->
+        <div class="product-card">
+            <img src="https://via.placeholder.com/300x200" alt="Product 3" loading="lazy">
+            <h3>Product 3</h3>
+            <p>$45.00</p>
+            <button onclick="addToCart('Product 3', 45)">Add to Cart</button>
+        </div>
+    </section>
+
+    <!-- Shopping Cart Section -->
+    <section id="cart" class="container cart">
+        <h2>Your Cart</h2>
+        <ul id="cartItems"></ul>
+        <p>Total: $<span id="totalPrice">0.00</span></p>
+        <button onclick="checkout()">Checkout</button>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="container">
+        <h2>Contact Us</h2>
+        <form id="contactForm">
+            <input type="email" id="email" placeholder="Enter your email" required>
+            <button type="submit" id="submitContact">Submit</button>
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 My E-Commerce Web App</p>
+    </footer>
+
+    <script>
+        // Cart functionality
+        let cart = [];
+        let total = 0;
+
+        // Add product to the cart
+        function addToCart(product, price) {
+            cart.push({ product, price });
+            total += price;
+            updateCart();
+        }
+
+        // Update the cart display
+        function updateCart() {
+            const cartItems = document.getElementById("cartItems");
+            cartItems.innerHTML = '';
+            cart.forEach(item => {
+                const li = document.createElement("li");
+                li.textContent = `${item.product} - $${item.price.toFixed(2)}`;
+                cartItems.appendChild(li);
+            });
+
+            const totalPrice = document.getElementById("totalPrice");
+            totalPrice.textContent = total.toFixed(2);
+        }
+
+        // Checkout function
+        function checkout() {
+            alert(`Your total is $${total.toFixed(2)}. Thank you for shopping!`);
+            cart = [];
+            total = 0;
+            updateCart();
+        }
+
+        // Form submission (for simplicity, we just alert the email)
+        document.getElementById("contactForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const email = document.getElementById("email").value;
+            alert(`Thank you for reaching out, ${email}!`);
+        });
+    </script>
+</body>
+</html>
